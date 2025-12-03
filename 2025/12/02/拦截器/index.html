@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>拦截器 | 刘文鑫-个人博客</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="深入理解拦截器。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="拦截器">
+<meta property="og:url" content="https://llwx2324.github.io/blog/2025/12/02/%E6%8B%A6%E6%88%AA%E5%99%A8/index.html">
+<meta property="og:site_name" content="刘文鑫-个人博客">
+<meta property="og:description" content="深入理解拦截器。">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2025-12-02T08:47:00.000Z">
+<meta property="article:modified_time" content="2025-12-03T03:09:07.012Z">
+<meta property="article:author" content="刘文鑫">
+<meta name="twitter:card" content="summary">
+  
+    <link rel="alternate" href="/blog/atom.xml" title="刘文鑫-个人博客" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/blog/css/images/L-logo-transparent.png">
+  
+  
+  
+<link rel="stylesheet" href="/blog/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/blog/fancybox/jquery.fancybox.min.css">
+
+  
+  
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fork-awesome@1.2.0/css/fork-awesome.min.css">
+
+<meta name="generator" content="Hexo 8.0.0"><link rel="stylesheet" href="/blog/css/prism.css" type="text/css"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/blog/" id="logo">刘文鑫</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/blog/" id="subtitle">记录与分享</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"><span class="fa fa-bars"></span></a>
+        
+          <a class="main-nav-link" href="/blog/">Home</a>
+        
+          <a class="main-nav-link" href="/blog/archives">Archives</a>
+        
+          <a class="main-nav-link" href="/blog/about">About</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          
+            <a class="nav-icon" target="_blank" rel="noopener" href="https://github.com/llwx2324"><span class="fa fa-github"></span></a>
+          
+        
+        
+        <a class="nav-icon nav-search-btn" title="Search"><span class="fa fa-search"></span></a>
+        <div id="search-form-wrap">
+          
+<div class="search-form">
+  <input id="search-input" type="search" placeholder="搜索本站文章..." autocomplete="off">
+  <ul id="search-results"></ul>
+</div>
+
+        </div>
+      </nav>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-拦截器" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/blog/2025/12/02/%E6%8B%A6%E6%88%AA%E5%99%A8/" class="article-date">
+  <time class="dt-published" datetime="2025-12-02T08:47:00.000Z" itemprop="datePublished">2025-12-02</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      拦截器
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>下面给你一套 <strong>Spring 自定义拦截器的完整流程 + 图解式理解</strong>，非常适合真实项目使用。</p>
+<hr>
+<h1 id="✅-一句话理解拦截器"><a href="#✅-一句话理解拦截器" class="headerlink" title="✅ 一句话理解拦截器"></a>✅ 一句话理解拦截器</h1><p>拦截器是 Spring MVC 请求执行链上的钩子，<br> 用于在 Controller 调用前后，执行额外逻辑：</p>
+<p>✔ 登录校验<br> ✔ 权限验证<br> ✔ 日志记录<br> ✔ 鉴权 token 解析<br> ✔ 统计请求耗时</p>
+<hr>
+<hr>
+<h1 id="🔵-自定义拦截器的完整流程（4-步走）"><a href="#🔵-自定义拦截器的完整流程（4-步走）" class="headerlink" title="🔵 自定义拦截器的完整流程（4 步走）"></a>🔵 自定义拦截器的完整流程（4 步走）</h1><hr>
+<h2 id="✔-第-1-步：定义拦截器类"><a href="#✔-第-1-步：定义拦截器类" class="headerlink" title="✔ 第 1 步：定义拦截器类"></a>✔ 第 1 步：定义拦截器类</h2><p>👉 继承 <code>HandlerInterceptor</code></p>
+<p>最常用三个回调：</p>
+<h3 id="🟦-1-preHandle-（请求到-Controller-之前执行）"><a href="#🟦-1-preHandle-（请求到-Controller-之前执行）" class="headerlink" title="🟦 1. preHandle() （请求到 Controller 之前执行）"></a>🟦 1. <code>preHandle()</code> （请求到 Controller 之前执行）</h3><p>适合登录校验、权限验证</p>
+<h3 id="🟨-2-postHandle-（Controller-执行后，视图渲染前）"><a href="#🟨-2-postHandle-（Controller-执行后，视图渲染前）" class="headerlink" title="🟨 2. postHandle() （Controller 执行后，视图渲染前）"></a>🟨 2. <code>postHandle()</code> （Controller 执行后，视图渲染前）</h3><p>适合：日志、修改 Model 数据</p>
+<h3 id="🟩-3-afterCompletion-（整个请求完成后执行）"><a href="#🟩-3-afterCompletion-（整个请求完成后执行）" class="headerlink" title="🟩 3. afterCompletion() （整个请求完成后执行）"></a>🟩 3. <code>afterCompletion()</code> （整个请求完成后执行）</h3><p>适合：资源回收、性能分析</p>
+<p>📌 示例：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">LoginInterceptor</span> <span class="keyword">implements</span> <span class="title class_">HandlerInterceptor</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="type">boolean</span> <span class="title function_">preHandle</span><span class="params">(HttpServletRequest request, HttpServletResponse response, Object handler)</span> <span class="keyword">throws</span> Exception &#123;</span><br><span class="line">        <span class="type">Object</span> <span class="variable">user</span> <span class="operator">=</span> request.getSession().getAttribute(<span class="string">&quot;user&quot;</span>);</span><br><span class="line">        <span class="keyword">if</span>(user == <span class="literal">null</span>)&#123;</span><br><span class="line">            System.out.println(<span class="string">&quot;未登录，拒绝访问&quot;</span>);</span><br><span class="line">            response.sendRedirect(<span class="string">&quot;/login&quot;</span>);</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">false</span>; <span class="comment">// 拦截</span></span><br><span class="line">        &#125;</span><br><span class="line">        System.out.println(<span class="string">&quot;通过拦截&quot;</span>);</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">true</span>; <span class="comment">// 放行</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">postHandle</span><span class="params">(HttpServletRequest request, HttpServletResponse response, </span></span><br><span class="line"><span class="params">                           Object handler, ModelAndView modelAndView)</span> &#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;Controller 执行完了&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">afterCompletion</span><span class="params">(HttpServletRequest request, HttpServletResponse response,</span></span><br><span class="line"><span class="params">                                Object handler, Exception ex)</span> &#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;请求结束，资源清理&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<hr>
+<hr>
+<h2 id="✔-第-2-步：在配置类中注册拦截器"><a href="#✔-第-2-步：在配置类中注册拦截器" class="headerlink" title="✔ 第 2 步：在配置类中注册拦截器"></a>✔ 第 2 步：在配置类中注册拦截器</h2><p>实现 <code>WebMvcConfigurer</code></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Configuration</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">WebConfig</span> <span class="keyword">implements</span> <span class="title class_">WebMvcConfigurer</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">addInterceptors</span><span class="params">(InterceptorRegistry registry)</span> &#123;</span><br><span class="line">        registry.addInterceptor(<span class="keyword">new</span> <span class="title class_">LoginInterceptor</span>())</span><br><span class="line">                .addPathPatterns(<span class="string">&quot;/**&quot;</span>)      <span class="comment">// 拦截所有请求</span></span><br><span class="line">                .excludePathPatterns(<span class="string">&quot;/login&quot;</span>, <span class="string">&quot;/register&quot;</span>, <span class="string">&quot;/static/**&quot;</span>); <span class="comment">// 放行路径</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>🔹 这里就是建立关系：<br> 「哪些请求会经过我的拦截器」</p>
+<hr>
+<hr>
+<h2 id="✔-第-3-步：拦截器加入-Spring-MVC-执行链"><a href="#✔-第-3-步：拦截器加入-Spring-MVC-执行链" class="headerlink" title="✔ 第 3 步：拦截器加入 Spring MVC 执行链"></a>✔ 第 3 步：拦截器加入 Spring MVC 执行链</h2><p>🌍 请求过来后执行顺序如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">请求进入</span><br><span class="line">  ↓</span><br><span class="line">DispatcherServlet（分发器）</span><br><span class="line">  ↓</span><br><span class="line">HandlerInterceptor.preHandle() —— 拦截器链前置执行</span><br><span class="line">  ↓</span><br><span class="line">Controller —— 执行业务方法</span><br><span class="line">  ↓</span><br><span class="line">HandlerInterceptor.postHandle() —— 拦截器链后置执行</span><br><span class="line">  ↓</span><br><span class="line">ViewResolver —— 渲染视图</span><br><span class="line">  ↓</span><br><span class="line">HandlerInterceptor.afterCompletion() —— 请求完成清理</span><br><span class="line">  ↓</span><br><span class="line">返回响应</span><br></pre></td></tr></table></figure>
+
+<p>👉 图形理解：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">--- preHandle ---&gt; Controller --- postHandle ---&gt; View --- afterCompletion ---</span><br></pre></td></tr></table></figure>
+
+<hr>
+<hr>
+<h2 id="✔-第-4-步：Spring-按链式顺序调用多个拦截器"><a href="#✔-第-4-步：Spring-按链式顺序调用多个拦截器" class="headerlink" title="✔ 第 4 步：Spring 按链式顺序调用多个拦截器"></a>✔ 第 4 步：Spring 按链式顺序调用多个拦截器</h2><p>多个拦截器执行顺序像洋葱模型：</p>
+<h3 id="📌-执行顺序"><a href="#📌-执行顺序" class="headerlink" title="📌 执行顺序"></a>📌 执行顺序</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">多个拦截器的 preHandle() 按注册顺序执行</span><br><span class="line">多个拦截器的 postHandle() 按逆序执行</span><br><span class="line">多个拦截器的 afterCompletion() 按逆序执行</span><br></pre></td></tr></table></figure>
+
+<p>📍 示例：</p>
+<p>注册：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">registry.addInterceptor(A);</span><br><span class="line">registry.addInterceptor(B);</span><br></pre></td></tr></table></figure>
+
+<p>执行顺序：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">A.pre → B.pre → Controller → B.post → A.post → B.after → A.after</span><br></pre></td></tr></table></figure>
+
+<hr>
+<hr>
+<h1 id="🔶-总体流程示意图（记住这个就清晰了）"><a href="#🔶-总体流程示意图（记住这个就清晰了）" class="headerlink" title="🔶 总体流程示意图（记住这个就清晰了）"></a>🔶 总体流程示意图（记住这个就清晰了）</h1><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">   preHandle()</span><br><span class="line">       ↓</span><br><span class="line">   controller()</span><br><span class="line">       ↓</span><br><span class="line">   postHandle()</span><br><span class="line">       ↓</span><br><span class="line">   视图渲染</span><br><span class="line">       ↓</span><br><span class="line">afterCompletion()</span><br></pre></td></tr></table></figure>
+
+<hr>
+<hr>
+<h1 id="🔴-拦截器的常见用途"><a href="#🔴-拦截器的常见用途" class="headerlink" title="🔴 拦截器的常见用途"></a>🔴 拦截器的常见用途</h1><p>✔ 登录检查<br> ✔ JWT 解析 + 用户上下文绑定<br> ✔ 访问日志<br> ✔ 请求限流<br> ✔ 请求计时<br> ✔ 权限权限控制<br> ✔ 统一处理跨域</p>
+<hr>
+<hr>
+<h1 id="🟩-和-Filter-AOP-的区别"><a href="#🟩-和-Filter-AOP-的区别" class="headerlink" title="🟩 和 Filter &#x2F; AOP 的区别"></a>🟩 和 Filter &#x2F; AOP 的区别</h1><table>
+<thead>
+<tr>
+<th>名称</th>
+<th>作用层级</th>
+<th>场景</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Filter</td>
+<td>Servlet 层</td>
+<td>比如编码、XSS 过滤</td>
+</tr>
+<tr>
+<td>Interceptor</td>
+<td>Spring MVC 层</td>
+<td>登录鉴权、日志</td>
+</tr>
+<tr>
+<td>AOP</td>
+<td>业务方法层</td>
+<td>性能监控、事务、日志</td>
+</tr>
+</tbody></table>
+<hr>
+<hr>
+<h1 id="✨-最后给你一个最佳实践模板"><a href="#✨-最后给你一个最佳实践模板" class="headerlink" title="✨ 最后给你一个最佳实践模板"></a>✨ 最后给你一个最佳实践模板</h1><p>实际项目中你可以这样用：</p>
+<h3 id="1️⃣-ThreadLocal存储登录用户（ThreadLocal）"><a href="#1️⃣-ThreadLocal存储登录用户（ThreadLocal）" class="headerlink" title="1️⃣ ThreadLocal存储登录用户（ThreadLocal）"></a>1️⃣ ThreadLocal存储登录用户<a href="./ThreadLocal.md">（ThreadLocal）</a></h3><p>（你的系统里 ThreadLocal 用来存用户就行）</p>
+<h3 id="2️⃣-拦截器中解析-token"><a href="#2️⃣-拦截器中解析-token" class="headerlink" title="2️⃣ 拦截器中解析 token"></a>2️⃣ 拦截器中解析 token</h3><p>（你已经在项目写过 token 解析逻辑）</p>
+<h3 id="3️⃣-afterCompletion-里清理-ThreadLocal"><a href="#3️⃣-afterCompletion-里清理-ThreadLocal" class="headerlink" title="3️⃣ afterCompletion 里清理 ThreadLocal"></a>3️⃣ afterCompletion 里清理 ThreadLocal</h3><p>（防止内存泄漏）</p>
+<hr>
+<hr>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://llwx2324.github.io/blog/2025/12/02/%E6%8B%A6%E6%88%AA%E5%99%A8/" data-id="cuidS4HP4KkKUkcSUSzkOCE2S" data-title="拦截器" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      
+      
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/blog/2025/12/02/WebMvcConfigurer/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          WebMvcConfigurer
+        
+      </div>
+    </a>
+  
+  
+    <a href="/blog/2025/12/02/MVC%E3%80%81Spring%20MVC%E5%92%8C%E4%B8%89%E5%B1%82%E6%9E%B6%E6%9E%84/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">MVC、Spring MVC和三层架构</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/blog/archives/2025/12/">December 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blog/archives/2025/11/">November 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blog/archives/2025/10/">October 2025</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/blog/2025/12/03/Jackson%E5%92%8CFastjson%E5%AF%B9%E6%AF%94/">Jackson和Fastjson对比</a>
+          </li>
+        
+          <li>
+            <a href="/blog/2025/12/02/ThreadLocal/">ThreadLocal</a>
+          </li>
+        
+          <li>
+            <a href="/blog/2025/12/02/WebMvcConfigurer/">WebMvcConfigurer</a>
+          </li>
+        
+          <li>
+            <a href="/blog/2025/12/02/%E6%8B%A6%E6%88%AA%E5%99%A8/">拦截器</a>
+          </li>
+        
+          <li>
+            <a href="/blog/2025/12/02/MVC%E3%80%81Spring%20MVC%E5%92%8C%E4%B8%89%E5%B1%82%E6%9E%B6%E6%9E%84/">MVC、Spring MVC和三层架构</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2025 刘文鑫<br>
+      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/blog/" class="mobile-nav-link">Home</a>
+  
+    <a href="/blog/archives" class="mobile-nav-link">Archives</a>
+  
+    <a href="/blog/about" class="mobile-nav-link">About</a>
+  
+</nav>
+    
+
+
+<script src="/blog/js/jquery-3.6.4.min.js"></script>
+
+
+
+  
+<script src="/blog/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/blog/js/script.js"></script>
+
+
+
+
+<script src="/blog/js/search.js" data-root="/blog/"></script>
+
+
+  </div>
+</body>
+</html>

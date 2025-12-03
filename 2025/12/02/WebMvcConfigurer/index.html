@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>WebMvcConfigurer | 刘文鑫-个人博客</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="WebMvcConfigurer详细介绍。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="WebMvcConfigurer">
+<meta property="og:url" content="https://llwx2324.github.io/blog/2025/12/02/WebMvcConfigurer/index.html">
+<meta property="og:site_name" content="刘文鑫-个人博客">
+<meta property="og:description" content="WebMvcConfigurer详细介绍。">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2025-12-02T08:47:00.000Z">
+<meta property="article:modified_time" content="2025-12-03T03:07:44.644Z">
+<meta property="article:author" content="刘文鑫">
+<meta name="twitter:card" content="summary">
+  
+    <link rel="alternate" href="/blog/atom.xml" title="刘文鑫-个人博客" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/blog/css/images/L-logo-transparent.png">
+  
+  
+  
+<link rel="stylesheet" href="/blog/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/blog/fancybox/jquery.fancybox.min.css">
+
+  
+  
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fork-awesome@1.2.0/css/fork-awesome.min.css">
+
+<meta name="generator" content="Hexo 8.0.0"><link rel="stylesheet" href="/blog/css/prism.css" type="text/css"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/blog/" id="logo">刘文鑫</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/blog/" id="subtitle">记录与分享</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"><span class="fa fa-bars"></span></a>
+        
+          <a class="main-nav-link" href="/blog/">Home</a>
+        
+          <a class="main-nav-link" href="/blog/archives">Archives</a>
+        
+          <a class="main-nav-link" href="/blog/about">About</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          
+            <a class="nav-icon" target="_blank" rel="noopener" href="https://github.com/llwx2324"><span class="fa fa-github"></span></a>
+          
+        
+        
+        <a class="nav-icon nav-search-btn" title="Search"><span class="fa fa-search"></span></a>
+        <div id="search-form-wrap">
+          
+<div class="search-form">
+  <input id="search-input" type="search" placeholder="搜索本站文章..." autocomplete="off">
+  <ul id="search-results"></ul>
+</div>
+
+        </div>
+      </nav>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-WebMvcConfigurer" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/blog/2025/12/02/WebMvcConfigurer/" class="article-date">
+  <time class="dt-published" datetime="2025-12-02T08:47:00.000Z" itemprop="datePublished">2025-12-02</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      WebMvcConfigurer
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p><code>WebMvcConfigurer</code> 是 Spring MVC 中一个非常重要的扩展接口，它允许你在 <strong>不修改 Spring MVC 核心源码的情况下，自定义 MVC 行为</strong>。</p>
+<p>你可以理解它为：<br> 👉 <strong>Spring MVC 的“插件式配置入口”</strong></p>
+<hr>
+<h2 id="✨-它能干什么？"><a href="#✨-它能干什么？" class="headerlink" title="✨ 它能干什么？"></a>✨ 它能干什么？</h2><p>实现这个接口后，可以做很多常用配置：</p>
+<h3 id="✔-1-注册拦截器"><a href="#✔-1-注册拦截器" class="headerlink" title="✔ 1. 注册拦截器"></a>✔ 1. 注册拦截器</h3><p>例如登录检查、权限校验、日志拦截等：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">addInterceptors</span><span class="params">(InterceptorRegistry registry)</span> &#123;</span><br><span class="line">    registry.addInterceptor(<span class="keyword">new</span> <span class="title class_">LoginInterceptor</span>())</span><br><span class="line">            .addPathPatterns(<span class="string">&quot;/**&quot;</span>)</span><br><span class="line">            .excludePathPatterns(<span class="string">&quot;/login&quot;</span>, <span class="string">&quot;/register&quot;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h3 id="✔-2-配置跨域（CORS）"><a href="#✔-2-配置跨域（CORS）" class="headerlink" title="✔ 2. 配置跨域（CORS）"></a>✔ 2. 配置跨域（CORS）</h3><p>允许前端跨域访问：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">addCorsMappings</span><span class="params">(CorsRegistry registry)</span> &#123;</span><br><span class="line">    registry.addMapping(<span class="string">&quot;/**&quot;</span>)</span><br><span class="line">            .allowedOrigins(<span class="string">&quot;*&quot;</span>)</span><br><span class="line">            .allowedMethods(<span class="string">&quot;GET&quot;</span>, <span class="string">&quot;POST&quot;</span>, <span class="string">&quot;PUT&quot;</span>, <span class="string">&quot;DELETE&quot;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h3 id="✔-3-配置静态资源映射"><a href="#✔-3-配置静态资源映射" class="headerlink" title="✔ 3. 配置静态资源映射"></a>✔ 3. 配置静态资源映射</h3><p>让 <code>/images/**</code> 访问本地文件：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">addResourceHandlers</span><span class="params">(ResourceHandlerRegistry registry)</span> &#123;</span><br><span class="line">    registry.addResourceHandler(<span class="string">&quot;/images/**&quot;</span>)</span><br><span class="line">            .addResourceLocations(<span class="string">&quot;file:D:/images/&quot;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h3 id="✔-4-配置自定义参数解析器-信息转换器"><a href="#✔-4-配置自定义参数解析器-信息转换器" class="headerlink" title="✔ 4. 配置自定义参数解析器 &#x2F; 信息转换器"></a>✔ 4. 配置自定义参数解析器 &#x2F; 信息转换器</h3><p>比如 JSON 格式化时间、自定义类型转换：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">addFormatters</span><span class="params">(FormatterRegistry registry)</span> &#123;</span><br><span class="line">    registry.addConverter(<span class="keyword">new</span> <span class="title class_">MyDateConverter</span>());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h3 id="✔-5-配置视图跳转"><a href="#✔-5-配置视图跳转" class="headerlink" title="✔ 5. 配置视图跳转"></a>✔ 5. 配置视图跳转</h3><p>传统 MVC 中用于返回页面：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">addViewControllers</span><span class="params">(ViewControllerRegistry registry)</span> &#123;</span><br><span class="line">    registry.addViewController(<span class="string">&quot;/login&quot;</span>).setViewName(<span class="string">&quot;login.html&quot;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h3 id="✔-6-配置消息转换器（例如-JSON-序列化规则）"><a href="#✔-6-配置消息转换器（例如-JSON-序列化规则）" class="headerlink" title="✔ 6. 配置消息转换器（例如 JSON 序列化规则）"></a>✔ 6. 配置消息转换器（例如 JSON 序列化规则）</h3><p>如使用 FastJson&#x2F;Jackson 自定义配置：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">configureMessageConverters</span><span class="params">(List&lt;HttpMessageConverter&lt;?&gt;&gt; converters)</span> &#123;</span><br><span class="line">    converters.add(<span class="keyword">new</span> <span class="title class_">MappingJackson2HttpMessageConverter</span>());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<hr>
+<hr>
+<h2 id="🌿-如何使用？"><a href="#🌿-如何使用？" class="headerlink" title="🌿 如何使用？"></a>🌿 如何使用？</h2><p>你只需要写一个配置类：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Configuration</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">WebConfig</span> <span class="keyword">implements</span> <span class="title class_">WebMvcConfigurer</span> &#123;</span><br><span class="line">    </span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">addInterceptors</span><span class="params">(InterceptorRegistry registry)</span> &#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;注册拦截器&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 你需要什么就实现什么方法即可</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>⚠ 它 <strong>不是必须实现所有方法</strong>，你按需覆盖就好。</p>
+<hr>
+<hr>
+<h2 id="🔥-WebMvcConfigurer-什么时候用？"><a href="#🔥-WebMvcConfigurer-什么时候用？" class="headerlink" title="🔥 WebMvcConfigurer 什么时候用？"></a>🔥 WebMvcConfigurer 什么时候用？</h2><p>当你需要：</p>
+<p>✔ 自定义拦截器<a href="./%E6%8B%A6%E6%88%AA%E5%99%A8.md">（拦截器）</a><br> ✔ 跨域访问<br> ✔ 静态资源映射<br> ✔ JSON 自定义转换<br> ✔ 页面跳转映射<br> ✔ 参数绑定 &#x2F; 类型转换</p>
+<p>——就用它。</p>
+<hr>
+<hr>
+<h2 id="🌟-总结一句话"><a href="#🌟-总结一句话" class="headerlink" title="🌟 总结一句话"></a>🌟 总结一句话</h2><p>👉 <code>WebMvcConfigurer</code> 就是 <strong>扩展 Spring MVC 行为的配置接口</strong><br> 让你无需替换整个 MVC 机制，也能定制各种框架功能。</p>
+<hr>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://llwx2324.github.io/blog/2025/12/02/WebMvcConfigurer/" data-id="cuid3EdD3crAIVCOr31mkZoQ_" data-title="WebMvcConfigurer" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      
+      
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/blog/2025/12/02/ThreadLocal/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          ThreadLocal
+        
+      </div>
+    </a>
+  
+  
+    <a href="/blog/2025/12/02/%E6%8B%A6%E6%88%AA%E5%99%A8/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">拦截器</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/blog/archives/2025/12/">December 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blog/archives/2025/11/">November 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blog/archives/2025/10/">October 2025</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/blog/2025/12/03/Jackson%E5%92%8CFastjson%E5%AF%B9%E6%AF%94/">Jackson和Fastjson对比</a>
+          </li>
+        
+          <li>
+            <a href="/blog/2025/12/02/ThreadLocal/">ThreadLocal</a>
+          </li>
+        
+          <li>
+            <a href="/blog/2025/12/02/WebMvcConfigurer/">WebMvcConfigurer</a>
+          </li>
+        
+          <li>
+            <a href="/blog/2025/12/02/%E6%8B%A6%E6%88%AA%E5%99%A8/">拦截器</a>
+          </li>
+        
+          <li>
+            <a href="/blog/2025/12/02/MVC%E3%80%81Spring%20MVC%E5%92%8C%E4%B8%89%E5%B1%82%E6%9E%B6%E6%9E%84/">MVC、Spring MVC和三层架构</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2025 刘文鑫<br>
+      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/blog/" class="mobile-nav-link">Home</a>
+  
+    <a href="/blog/archives" class="mobile-nav-link">Archives</a>
+  
+    <a href="/blog/about" class="mobile-nav-link">About</a>
+  
+</nav>
+    
+
+
+<script src="/blog/js/jquery-3.6.4.min.js"></script>
+
+
+
+  
+<script src="/blog/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/blog/js/script.js"></script>
+
+
+
+
+<script src="/blog/js/search.js" data-root="/blog/"></script>
+
+
+  </div>
+</body>
+</html>
