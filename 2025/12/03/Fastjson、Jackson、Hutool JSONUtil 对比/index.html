@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>Fastjson、Jackson、Hutool JSONUtil 对比 | 刘文鑫-个人博客</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="Fastjson、Jackson、Hutool JSONUtil 对比。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Fastjson、Jackson、Hutool JSONUtil 对比">
+<meta property="og:url" content="https://llwx2324.github.io/blog/2025/12/03/Fastjson%E3%80%81Jackson%E3%80%81Hutool%20JSONUtil%20%E5%AF%B9%E6%AF%94/index.html">
+<meta property="og:site_name" content="刘文鑫-个人博客">
+<meta property="og:description" content="Fastjson、Jackson、Hutool JSONUtil 对比。">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2025-12-03T03:01:00.000Z">
+<meta property="article:modified_time" content="2025-12-04T06:47:24.295Z">
+<meta property="article:author" content="刘文鑫">
+<meta name="twitter:card" content="summary">
+  
+    <link rel="alternate" href="/blog/atom.xml" title="刘文鑫-个人博客" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/blog/css/images/L-logo-transparent.png">
+  
+  
+  
+<link rel="stylesheet" href="/blog/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/blog/fancybox/jquery.fancybox.min.css">
+
+  
+  
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fork-awesome@1.2.0/css/fork-awesome.min.css">
+
+<meta name="generator" content="Hexo 8.0.0"><link rel="stylesheet" href="/blog/css/prism.css" type="text/css"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/blog/" id="logo">刘文鑫</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/blog/" id="subtitle">记录与分享</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"><span class="fa fa-bars"></span></a>
+        
+          <a class="main-nav-link" href="/blog/">Home</a>
+        
+          <a class="main-nav-link" href="/blog/archives">Archives</a>
+        
+          <a class="main-nav-link" href="/blog/about">About</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          
+            <a class="nav-icon" target="_blank" rel="noopener" href="https://github.com/llwx2324"><span class="fa fa-github"></span></a>
+          
+        
+        
+        <a class="nav-icon nav-search-btn" title="Search"><span class="fa fa-search"></span></a>
+        <div id="search-form-wrap">
+          
+<div class="search-form">
+  <input id="search-input" type="search" placeholder="搜索本站文章..." autocomplete="off">
+  <ul id="search-results"></ul>
+</div>
+
+        </div>
+      </nav>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-Fastjson、Jackson、Hutool JSONUtil 对比" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/blog/2025/12/03/Fastjson%E3%80%81Jackson%E3%80%81Hutool%20JSONUtil%20%E5%AF%B9%E6%AF%94/" class="article-date">
+  <time class="dt-published" datetime="2025-12-03T03:01:00.000Z" itemprop="datePublished">2025-12-03</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      Fastjson、Jackson、Hutool JSONUtil 对比
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p><strong>Fastjson、Jackson、Hutool JSONUtil 对比 + 常用示例总结</strong></p>
+<hr>
+<h1 id="🔥-三大-JSON-工具对比表"><a href="#🔥-三大-JSON-工具对比表" class="headerlink" title="🔥 三大 JSON 工具对比表"></a>🔥 三大 JSON 工具对比表</h1><table>
+<thead>
+<tr>
+<th>特点</th>
+<th><strong>Fastjson2</strong></th>
+<th><strong>Jackson</strong></th>
+<th><strong>Hutool JSONUtil</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>谁开发</td>
+<td>阿里</td>
+<td>FasterXML &#x2F; Spring 默认</td>
+<td>国人开源工具 Hutool</td>
+</tr>
+<tr>
+<td>使用场景</td>
+<td>性能敏感，高速序列化</td>
+<td>SpringBoot &#x2F; 企业项目</td>
+<td>工具类开发、小项目</td>
+</tr>
+<tr>
+<td>Spring Boot 支持</td>
+<td>非默认</td>
+<td>✔️ 默认</td>
+<td>❌ 非默认</td>
+</tr>
+<tr>
+<td>扩展性</td>
+<td>中等</td>
+<td>非常强</td>
+<td>偏轻量</td>
+</tr>
+<tr>
+<td>泛型支持</td>
+<td>简单</td>
+<td>需 TypeReference</td>
+<td>自动推断较方便</td>
+</tr>
+<tr>
+<td>JSONPath</td>
+<td>✔ 支持</td>
+<td>可插件</td>
+<td>✔ 简单</td>
+</tr>
+<tr>
+<td>学习成本</td>
+<td>低</td>
+<td>中等</td>
+<td>极低</td>
+</tr>
+</tbody></table>
+<p>👉 如果你做 SpringBoot 业务系统：<strong>Jackson 是最佳</strong><br> 👉 写脚本&#x2F;工具类：<strong>Hutool JSONUtil 方便简洁</strong><br> 👉 关注性能&#x2F;国内老项目：<strong>Fastjson2 常用</strong></p>
+<hr>
+<hr>
+<h1 id="✅-每个库的核心用法（能直接复制用）"><a href="#✅-每个库的核心用法（能直接复制用）" class="headerlink" title="✅ 每个库的核心用法（能直接复制用）"></a>✅ 每个库的核心用法（能直接复制用）</h1><hr>
+<hr>
+<h2 id="✔️-Fastjson2"><a href="#✔️-Fastjson2" class="headerlink" title="✔️ Fastjson2"></a>✔️ Fastjson2</h2><h3 id="📌-Maven"><a href="#📌-Maven" class="headerlink" title="📌 Maven"></a>📌 Maven</h3><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>com.alibaba.fastjson2<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>fastjson2<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>2.0.43<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="🔸-对象-→-JSON"><a href="#🔸-对象-→-JSON" class="headerlink" title="🔸 对象 → JSON"></a>🔸 对象 → JSON</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">String</span> <span class="variable">str</span> <span class="operator">=</span> JSON.toJSONString(obj);</span><br></pre></td></tr></table></figure>
+
+<h3 id="🔸-JSON-→-对象"><a href="#🔸-JSON-→-对象" class="headerlink" title="🔸 JSON → 对象"></a>🔸 JSON → 对象</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">User</span> <span class="variable">u</span> <span class="operator">=</span> JSON.parseObject(str, User.class);</span><br></pre></td></tr></table></figure>
+
+<h3 id="🔸-JSON-数组-→-List"><a href="#🔸-JSON-数组-→-List" class="headerlink" title="🔸 JSON 数组 → List"></a>🔸 JSON 数组 → List</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">List&lt;User&gt; list = JSON.parseArray(str, User.class);</span><br></pre></td></tr></table></figure>
+
+<p>📌 <strong>特点</strong>：写法短、性能快，企业旧项目很多用它。</p>
+<hr>
+<hr>
+<h2 id="✔️-Jackson（SpringBoot-默认-JSON-工具）"><a href="#✔️-Jackson（SpringBoot-默认-JSON-工具）" class="headerlink" title="✔️ Jackson（SpringBoot 默认 JSON 工具）"></a>✔️ Jackson（SpringBoot 默认 JSON 工具）</h2><h3 id="📌-SpringBoot-自动带，不需额外依赖"><a href="#📌-SpringBoot-自动带，不需额外依赖" class="headerlink" title="📌 SpringBoot 自动带，不需额外依赖"></a>📌 SpringBoot 自动带，不需额外依赖</h3><h3 id="🔸-对象-→-JSON-1"><a href="#🔸-对象-→-JSON-1" class="headerlink" title="🔸 对象 → JSON"></a>🔸 对象 → JSON</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">ObjectMapper</span> <span class="variable">mapper</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">ObjectMapper</span>();</span><br><span class="line"><span class="type">String</span> <span class="variable">str</span> <span class="operator">=</span> mapper.writeValueAsString(obj);</span><br></pre></td></tr></table></figure>
+
+<h3 id="🔸-JSON-→-对象-1"><a href="#🔸-JSON-→-对象-1" class="headerlink" title="🔸 JSON → 对象"></a>🔸 JSON → 对象</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">User</span> <span class="variable">u</span> <span class="operator">=</span> mapper.readValue(str, User.class);</span><br></pre></td></tr></table></figure>
+
+<h3 id="🔸-JSON-数组-→-List（注意-TypeReference）"><a href="#🔸-JSON-数组-→-List（注意-TypeReference）" class="headerlink" title="🔸 JSON 数组 → List（注意 TypeReference）"></a>🔸 JSON 数组 → List（注意 TypeReference）</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">List&lt;User&gt; list = mapper.readValue(str, <span class="keyword">new</span> <span class="title class_">TypeReference</span>&lt;List&lt;User&gt;&gt;()&#123;&#125;);</span><br></pre></td></tr></table></figure>
+
+<p>📌 <strong>特点</strong>：</p>
+<p>✔ 控制复杂字段输出<br> ✔ 适合 Redis JSON 存储<br> ✔ 企业项目首选</p>
+<hr>
+<hr>
+<h2 id="✔️-Hutool-JSONUtil"><a href="#✔️-Hutool-JSONUtil" class="headerlink" title="✔️ Hutool JSONUtil"></a>✔️ Hutool JSONUtil</h2><p>📌 一个工具化框架，用法超级简单</p>
+<h3 id="🔸-Maven"><a href="#🔸-Maven" class="headerlink" title="🔸 Maven"></a>🔸 Maven</h3><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>cn.hutool<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>hutool-all<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>5.8.28<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="🔸-对象-→-JSON-2"><a href="#🔸-对象-→-JSON-2" class="headerlink" title="🔸 对象 → JSON"></a>🔸 对象 → JSON</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">String</span> <span class="variable">json</span> <span class="operator">=</span> JSONUtil.toJsonStr(obj);</span><br></pre></td></tr></table></figure>
+
+<h3 id="🔸-JSON-→-对象-2"><a href="#🔸-JSON-→-对象-2" class="headerlink" title="🔸 JSON → 对象"></a>🔸 JSON → 对象</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">User</span> <span class="variable">u</span> <span class="operator">=</span> JSONUtil.toBean(jsonStr, User.class);</span><br></pre></td></tr></table></figure>
+
+<h3 id="🔸-JSON-数组-→-List-1"><a href="#🔸-JSON-数组-→-List-1" class="headerlink" title="🔸 JSON 数组 → List"></a>🔸 JSON 数组 → List</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">List&lt;User&gt; list = JSONUtil.toList(jsonStr, User.class);</span><br></pre></td></tr></table></figure>
+
+<p>📌 <strong>特点</strong>：</p>
+<p>✔ 语法最短<br> ✔ 写 Demo 或工具类最舒服<br> ✔ 适合快速开发</p>
+<hr>
+<hr>
+<h1 id="⭐-推荐项目中用法（工程最佳实践）"><a href="#⭐-推荐项目中用法（工程最佳实践）" class="headerlink" title="⭐ 推荐项目中用法（工程最佳实践）"></a>⭐ 推荐项目中用法（工程最佳实践）</h1><table>
+<thead>
+<tr>
+<th>位置</th>
+<th>推荐 JSON 工具</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Controller 参数解析 &#x2F; 返回值</td>
+<td>Jackson</td>
+</tr>
+<tr>
+<td>Redis JSON 存储</td>
+<td>Jackson JSON Serializer</td>
+</tr>
+<tr>
+<td>SpringBoot 项目统一 JSON 工具类</td>
+<td>Jackson + ObjectMapper Bean</td>
+</tr>
+<tr>
+<td>小工具 &#x2F; 单测脚本</td>
+<td>Hutool JSONUtil</td>
+</tr>
+<tr>
+<td>追求极致性能</td>
+<td>Fastjson2</td>
+</tr>
+</tbody></table>
+<hr>
+<hr>
+<h1 id="⚡-实战：统一-JSONUtil-封装（能放到你项目-utils-包里）"><a href="#⚡-实战：统一-JSONUtil-封装（能放到你项目-utils-包里）" class="headerlink" title="⚡ 实战：统一 JSONUtil 封装（能放到你项目 utils 包里）"></a>⚡ 实战：统一 JSONUtil 封装（能放到你项目 utils 包里）</h1><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">JsonUtil</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="type">ObjectMapper</span> <span class="variable">mapper</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">ObjectMapper</span>();</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> String <span class="title function_">toJson</span><span class="params">(Object obj)</span> &#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="keyword">return</span> mapper.writeValueAsString(obj);</span><br><span class="line">        &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">RuntimeException</span>(e);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> &lt;T&gt; T <span class="title function_">toObj</span><span class="params">(String json, Class&lt;T&gt; clazz)</span> &#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="keyword">return</span> mapper.readValue(json, clazz);</span><br><span class="line">        &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">RuntimeException</span>(e);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> &lt;T&gt; T <span class="title function_">toObj</span><span class="params">(String json, TypeReference&lt;T&gt; type)</span> &#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="keyword">return</span> mapper.readValue(json, type);</span><br><span class="line">        &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">RuntimeException</span>(e);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>📌 项目依赖 Jackson，其他库想用就局部使用。</p>
+<hr>
+<hr>
+<h1 id="🔍-面试思路怎么答？"><a href="#🔍-面试思路怎么答？" class="headerlink" title="🔍 面试思路怎么答？"></a>🔍 面试思路怎么答？</h1><blockquote>
+<p><strong>问：Fastjson、Jackson、Hutool JSONUtil 区别？</strong></p>
+</blockquote>
+<p>答：</p>
+<p>✔ Jackson 是 Spring 默认的 JSON 序列化工具，可扩展性最好，生产推荐<br> ✔ Fastjson2 性能更高，写法简洁，但生态略弱<br> ✔ Hutool JSONUtil 最轻量，写工具类非常方便</p>
+<blockquote>
+<p><strong>问：Redis 推荐哪个？</strong></p>
+</blockquote>
+<p>✔ Jackson，因为 Spring Data Redis 默认就是用 Jackson 序列化器</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://llwx2324.github.io/blog/2025/12/03/Fastjson%E3%80%81Jackson%E3%80%81Hutool%20JSONUtil%20%E5%AF%B9%E6%AF%94/" data-id="cuidW8UEX_AEDnfheCkQ7MhtJ" data-title="Fastjson、Jackson、Hutool JSONUtil 对比" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      
+      
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="/blog/2025/12/02/ThreadLocal/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">ThreadLocal</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/blog/archives/2025/12/">December 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blog/archives/2025/11/">November 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blog/archives/2025/10/">October 2025</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/blog/2025/12/03/Fastjson%E3%80%81Jackson%E3%80%81Hutool%20JSONUtil%20%E5%AF%B9%E6%AF%94/">Fastjson、Jackson、Hutool JSONUtil 对比</a>
+          </li>
+        
+          <li>
+            <a href="/blog/2025/12/02/ThreadLocal/">ThreadLocal</a>
+          </li>
+        
+          <li>
+            <a href="/blog/2025/12/02/%E6%8B%A6%E6%88%AA%E5%99%A8/">拦截器</a>
+          </li>
+        
+          <li>
+            <a href="/blog/2025/12/02/WebMvcConfigurer/">WebMvcConfigurer</a>
+          </li>
+        
+          <li>
+            <a href="/blog/2025/12/02/MVC%E3%80%81Spring%20MVC%E5%92%8C%E4%B8%89%E5%B1%82%E6%9E%B6%E6%9E%84/">MVC、Spring MVC和三层架构</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2025 刘文鑫<br>
+      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/blog/" class="mobile-nav-link">Home</a>
+  
+    <a href="/blog/archives" class="mobile-nav-link">Archives</a>
+  
+    <a href="/blog/about" class="mobile-nav-link">About</a>
+  
+</nav>
+    
+
+
+<script src="/blog/js/jquery-3.6.4.min.js"></script>
+
+
+
+  
+<script src="/blog/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/blog/js/script.js"></script>
+
+
+
+
+<script src="/blog/js/search.js" data-root="/blog/"></script>
+
+
+  </div>
+</body>
+</html>
